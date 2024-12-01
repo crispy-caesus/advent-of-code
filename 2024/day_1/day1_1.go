@@ -17,7 +17,7 @@ func parseLists() (*[]int, *[]int) {
 	}
 	fd := f.Fd()
 	fmt.Println(fd)
-    var historianList, officeList []int
+	var historianList, officeList []int
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
@@ -35,8 +35,8 @@ func parseLists() (*[]int, *[]int) {
 			log.Fatal(err)
 		}
 
-        historianList = append(historianList, historianId)
-        officeList = append(officeList, officeId)
+		historianList = append(historianList, historianId)
+		officeList = append(officeList, officeId)
 
 	}
 	if err := scanner.Err(); err != nil {
@@ -47,8 +47,8 @@ func parseLists() (*[]int, *[]int) {
 }
 
 func selectionSort(unsortedList *[]int) *[]int {
-    sortedList := make([]int, len(*unsortedList))
-    copy(sortedList, *unsortedList)
+	sortedList := make([]int, len(*unsortedList))
+	copy(sortedList, *unsortedList)
 
 	for i := 0; i < len(sortedList); i++ {
 		minIndex := i
@@ -72,21 +72,54 @@ func compare(historianList *[]int, officeList *[]int) (difference *int) {
 	var diffSum int
 	for i := 0; i < len(*historianList); i++ {
 		diff := abs((*officeList)[i] - (*historianList)[i])
-		fmt.Printf("%d %d difference: %d\n", (*officeList)[i], (*historianList)[i], diff)
+		fmt.Printf("%d %d difference: %d\n", (*historianList)[i], (*officeList)[i], diff)
 		diffSum += diff
 	}
 	return &diffSum
 }
 
+func calculateSimilarityScore(historianList *[]int, officeList *[]int) *int {
+	var similarityScore int
+	for len(*historianList) != 0 {
+		i := 0
+		k := 0
+		//================================== i ======================================//
+		for ; i < len(*historianList) && (*historianList)[i] == (*historianList)[0]; i++ {
+		}
+        i--
+
+		//==================================j =====================================//
+
+		for j := 0; j < len(*officeList); j++ {
+			if (*officeList)[j] == (*historianList)[i] {
+				if j != 0 {
+					*officeList = (*officeList)[j:]
+				}
+
+				//=================================== k ================================//
+				for ; k < len(*officeList) && (*officeList)[k] == (*historianList)[i]; k++ {
+				}
+			}
+		}
+
+		fmt.Printf("%d: %dx left %dx right\n", (*historianList)[i], i+1, k)
+		similarityScore += (i + 1) * ((*historianList)[i] * (k))
+		*historianList = (*historianList)[i+1:]
+	}
+
+	return &similarityScore
+}
+
 func main() {
 	historianList, officeList := parseLists()
 
-    sortedHistorianList := selectionSort(historianList)
-    sortedOfficeList := selectionSort(officeList)
+	sortedHistorianList := selectionSort(historianList)
+	sortedOfficeList := selectionSort(officeList)
 
-    difference := compare(sortedHistorianList, sortedOfficeList)
-    fmt.Println(*difference)      // result part 1
+	difference := compare(sortedHistorianList, sortedOfficeList)
+	fmt.Println(*difference) // result part 1
 
-
+	similarityScore := calculateSimilarityScore(sortedHistorianList, sortedOfficeList)
+	fmt.Println(*similarityScore)
 
 }
