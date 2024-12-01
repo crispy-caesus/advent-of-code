@@ -15,15 +15,12 @@ func parseLists() (*[]int, *[]int) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fd := f.Fd()
-	fmt.Println(fd)
 	var historianList, officeList []int
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		line := scanner.Text()
 		splitStrings := strings.Split(line, "   ")
-		fmt.Println(splitStrings)
 
 		historianId, err := strconv.Atoi(splitStrings[0])
 		if err != nil {
@@ -72,7 +69,7 @@ func compare(historianList *[]int, officeList *[]int) (difference *int) {
 	var diffSum int
 	for i := 0; i < len(*historianList); i++ {
 		diff := abs((*officeList)[i] - (*historianList)[i])
-		fmt.Printf("%d %d difference: %d\n", (*historianList)[i], (*officeList)[i], diff)
+		//fmt.Printf("%d %d difference: %d\n", (*historianList)[i], (*officeList)[i], diff)
 		diffSum += diff
 	}
 	return &diffSum
@@ -102,7 +99,7 @@ func calculateSimilarityScore(historianList *[]int, officeList *[]int) *int {
 			}
 		}
 
-		fmt.Printf("%d: %dx left %dx right\n", (*historianList)[i], i+1, k)
+		//fmt.Printf("%d: %dx left %dx right\n", (*historianList)[i], i+1, k)
 		similarityScore += (i + 1) * ((*historianList)[i] * (k))
 		*historianList = (*historianList)[i+1:]
 	}
